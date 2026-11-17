@@ -4,7 +4,6 @@ import com.Arek1126.medicalclinic.model.Patient;
 import com.Arek1126.medicalclinic.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,25 +13,23 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
 
-
-    public List<Patient> getPatients() {
+    public List<Patient> getAll() {
         return patientRepository.findAll();
     }
 
-   public Optional<Patient> getPatientByEmail(String email){
-        return patientRepository.findPatientByEmail(email);
+   public Optional<Patient> getByEmail(String email){
+        return patientRepository.findByEmail(email);
    }
 
-   public boolean addPatient(Patient patient){
+   public Optional<Patient> addPatient(Patient patient){
        return patientRepository.addPatient(patient);
-
    }
 
-   public boolean deletePatientByEmail(String email){
-        return patientRepository.deletePatientByEmail(email);
+   public boolean deleteByEmail(String email){
+        return patientRepository.deleteByEmail(email);
    }
 
-    public boolean modifyPatient(String email, Patient patient){
-        return patientRepository.modifyPatient(email, patient);
+    public Optional<Patient> modifyPatient(String email, Patient patient){
+        return patientRepository.modifyByEmail(email, patient);
     }
 }
