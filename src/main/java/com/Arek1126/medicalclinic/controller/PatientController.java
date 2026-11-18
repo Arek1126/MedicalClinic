@@ -47,4 +47,12 @@ public class PatientController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    @PatchMapping("/{email}/password")
+    public ResponseEntity<Void> changePassword(@PathVariable String email, @RequestBody String newPassword){
+        service.changePassword(email, newPassword);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

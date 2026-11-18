@@ -1,5 +1,6 @@
 package com.Arek1126.medicalclinic.service;
 
+import com.Arek1126.medicalclinic.exception.PatientNotFoundException;
 import com.Arek1126.medicalclinic.model.Patient;
 import com.Arek1126.medicalclinic.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,11 @@ public class PatientService {
 
     public Optional<Patient> modifyPatient(String email, Patient patient){
         return patientRepository.modifyByEmail(email, patient);
+    }
+
+    public void changePassword(String email, String newPassword){
+        Patient patient = patientRepository.findByEmail(email)
+                .orElseThrow(PatientNotFoundException::new);
+        patient.setPassword(newPassword);
     }
 }
