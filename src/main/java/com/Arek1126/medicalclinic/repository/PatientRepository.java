@@ -1,45 +1,56 @@
 package com.Arek1126.medicalclinic.repository;
 
 import com.Arek1126.medicalclinic.model.Patient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class PatientRepository {
 
-    private final List<Patient> patients;
-
-    public PatientRepository() {
-        this.patients = new ArrayList<>();
-    }
+    private final List<Patient> patients = new ArrayList<>();
 
     public List<Patient> findAll(){
         return new ArrayList<>(patients);
     }
 
-    public Optional<Patient> findPatientByEmail(String email){
-        return patients.stream().filter(p -> p.getEmail().equalsIgnoreCase(email)).findFirst();
+    public Optional<Patient> findByEmail(String email){
+        return patients.stream()
+                .filter(patient -> patient.getEmail().equalsIgnoreCase(email))
+                .findFirst();
     }
 
-    public boolean addPatient(Patient patient){
-        if(findPatientByEmail(patient.getEmail()).isPresent())
-            return false;
-        else {
-            patients.add(patient);
-            return true;
+    public Optional<Patient> addPatient(Patient newPatient){
+        if (findByEmail(newPatient.getEmail()).isEmpty()){
+            return Optional.empty();
+        }
+        else{
+            patients.add(newPatient);
+            return Optional.of(newPatient);
         }
     }
 
-    public boolean deletePatientByEmail(String email){
-        return patients.removeIf(p -> p.getEmail().equalsIgnoreCase(email));
+    public boolean deleteByEmail(String email){
+        return findByEmail(email)
+                .map(patients::remove)
+                .orElse(false);
     }
 
-    public boolean modifyPatient(String email, Patient patient){
-        if(patients.removeIf(p -> p.getEmail().equalsIgnoreCase(email)))
-            return patients.add(patient);
-        return false;
+    public Optional<Patient> modifyByEmail(String email, Patient patient){
+        return findByEmail(email)
+                .map(oldPatient -> {
+                    oldPatient.setFirstName(patient.getFirstName());
+                    oldPatient.setLastName(patient.getLastName());
+                    oldPatient.setBirthday(patient.getBirthday());
+                    oldPatient.setPhoneNumber(patient.getPhoneNumber());
+                    oldPatient.setIdCardNumber(patient.getIdCardNumber());
+                    return Optional.of(patient);
+                })
+                .orElseGet(Optional::empty);
     }
+
+
 }
