@@ -1,5 +1,6 @@
 package com.Arek1126.medicalclinic.service;
 
+import com.Arek1126.medicalclinic.exception.PatientAlreadyExists;
 import com.Arek1126.medicalclinic.exception.PatientNotFoundException;
 import com.Arek1126.medicalclinic.model.Patient;
 import com.Arek1126.medicalclinic.repository.PatientRepository;
@@ -18,20 +19,25 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-   public Optional<Patient> getByEmail(String email){
-        return patientRepository.findByEmail(email);
+   public Patient getByEmail(String email){
+        return patientRepository.findByEmail(email)
+                .orElseThrow(PatientNotFoundException::new);
    }
 
-   public Optional<Patient> addPatient(Patient patient){
-       return patientRepository.addPatient(patient);
+   public Patient addPatient(Patient patient){
+        return patientRepository.addPatient(patient)
+                .orElseThrow(PatientAlreadyExists::new);
    }
 
-   public boolean deleteByEmail(String email){
-        return patientRepository.deleteByEmail(email);
+   public void deleteByEmail(String email){
+        if(!patientRepository.deleteByEmail(email)){
+            throw new PatientNotFoundException();
+        }
    }
 
-    public Optional<Patient> modifyPatient(String email, Patient patient){
-        return patientRepository.modifyByEmail(email, patient);
+    public Patient modifyPatient(String email, Patient patient){
+        return patientRepository.modifyByEmail(email, patient)
+                .orElseThrow(PatientNotFoundException::new);
     }
 
     public void changePassword(String email, String newPassword){

@@ -1,8 +1,11 @@
 package com.Arek1126.medicalclinic.exception;
 
-public class PatientNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
 
-    public PatientNotFoundException(){
-        super(" Błąd: taki użytkownik nie istnieje");
+public class PatientNotFoundException extends MedicalClinicException {
+
+    public PatientNotFoundException() {
+
+        super("Patient Not Found", HttpStatus.NOT_FOUND);
     }
 }

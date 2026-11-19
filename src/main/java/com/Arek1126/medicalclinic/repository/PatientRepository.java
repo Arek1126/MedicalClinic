@@ -24,12 +24,13 @@ public class PatientRepository {
     }
 
     public Optional<Patient> addPatient(Patient newPatient){
-        return findByEmail(newPatient.getEmail())
-                .map(patient -> Optional.<Patient>empty())
-                .orElseGet(() -> {
-                    patients.add(newPatient);
-                    return Optional.of(newPatient);
-                });
+        if (findByEmail(newPatient.getEmail()).isEmpty()){
+            return Optional.empty();
+        }
+        else{
+            patients.add(newPatient);
+            return Optional.of(newPatient);
+        }
     }
 
     public boolean deleteByEmail(String email){

@@ -21,31 +21,24 @@ public class PatientController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<Patient> getByEmail(@PathVariable String email) {
-        return service.getByEmail(email).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Patient getByEmail(@PathVariable String email) {
+        return service.getByEmail(email);
     }
 
     @PostMapping
-    public ResponseEntity<Patient> addPatient(@RequestBody Patient patient){
-        return service.addPatient(patient)
-                .map(addedPatient -> ResponseEntity.status(HttpStatus.CREATED).body(addedPatient))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
+    public ResponseEntity<Patient> save(@RequestBody Patient patient){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.addPatient(patient));
     }
 
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteByEmail(@PathVariable String email){
-        if(!service.deleteByEmail(email)) {
-            return ResponseEntity.notFound().build();
-        }
+        service.deleteByEmail(email);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{email}")
-    public ResponseEntity<Patient> modifyByEmail(@PathVariable String email, @RequestBody Patient patient) {
-        return service.modifyPatient(email, patient)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public Patient modifyByEmail(@PathVariable String email, @RequestBody Patient patient) {
+        return service.modifyPatient(email, patient);
     }
 
     @PatchMapping("/{email}/password")
