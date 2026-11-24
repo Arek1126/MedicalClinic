@@ -39,7 +39,7 @@ public class PatientService {
         }
    }
 
-    public PatientDTO modifyPatient(String email, Patient modifiedPatient){
+    public PatientDTO modifyByEmail(String email, Patient modifiedPatient){
         Patient patient = patientRepository.modifyByEmail(email, modifiedPatient)
                 .orElseThrow(PatientNotFoundException::new);
         return patientMapper.toDTO(patient);
