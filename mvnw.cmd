@@ -88,11 +88,24 @@ if (-not (Test-Path -Path $MAVEN_M2_PATH)) {
     New-Item -Path $MAVEN_M2_PATH -ItemType Directory | Out-Null
 }
 
-$MAVEN_WRAPPER_DISTS = $null
-if ((Get-Item $MAVEN_M2_PATH).Target[0] -eq $null) {
-  $MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
-} else {
-  $MAVEN_WRAPPER_DISTS = (Get-Item $MAVEN_M2_PATH).Target[0] + "/wrapper/dists"
+$MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
+
+try {
+    $m2Item = Get-Item -LiteralPath $MAVEN_M2_PATH -Force -ErrorAction Stop
+
+    if ($m2Item.Target) {
+        $target = $m2Item.Target
+
+        if ($target -is [array]) {
+            $target = $target[0]
+        }
+
+        if ($target) {
+            $MAVEN_WRAPPER_DISTS = "$target/wrapper/dists"
+        }
+    }
+} catch {
+    # Use the default Maven wrapper directory
 }
 
 $MAVEN_HOME_PARENT = "$MAVEN_WRAPPER_DISTS/$distributionUrlNameMain"
@@ -110,7 +123,7 @@ if (! $distributionUrlNameMain -or ($distributionUrlName -eq $distributionUrlNam
 }
 
 # prepare tmp dir
-$TMP_DOWNLOAD_DIR_HOLDER = New-TemporaryFile
+$TMP_DOWNLOAD_DIR_HOLDER = Get-Item ([System.IO.Path]::GetTempFileName())
 $TMP_DOWNLOAD_DIR = New-Item -Itemtype Directory -Path "$TMP_DOWNLOAD_DIR_HOLDER.dir"
 $TMP_DOWNLOAD_DIR_HOLDER.Delete() | Out-Null
 trap {

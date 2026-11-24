@@ -83,7 +83,7 @@ public class PatientServiceTest {
     void modifyByEmail_DataCorrect_PatientReturned(){
         //given
         Patient patient = new Patient("marek.kowalski@example.com", "342mfp", "GFH987", "Marek", "Kowalski", "239282435", LocalDate.of(1983,02, 01));
-        Patient patientsNewData =  new Patient("marek.kowalski@example.com","mfd912","ZXC314", "Antoni", "Nowak", "192642721", LocalDate.of(1987, 02, 04)));
+        Patient patientsNewData =  new Patient("marek.kowalski@example.com","mfd912","ZXC314", "Antoni", "Nowak", "192642721", LocalDate.of(1987, 02, 04));
         when(patientRepository.modifyByEmail(patient.getEmail(), patientsNewData)).thenReturn(Optional.of(patientsNewData));
         //when
         PatientDTO result = patientService.modifyByEmail(patient.getEmail(), patientsNewData);
