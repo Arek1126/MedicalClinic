@@ -5,8 +5,7 @@ import com.Arek1126.medicalclinic.model.PatientDTO;
 import org.mapstruct.Mapper;
 
 import java.util.List;
-
-@Mapper(componentModel ="spring")
+@Mapper(componentModel = "spring")
 public interface PatientMapper {
 
     PatientDTO toDTO(Patient patient);
