@@ -28,7 +28,7 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<PatientDTO> save(@RequestBody Patient patient){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addPatient(patient));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(patient));
     }
 
     @DeleteMapping("/{email}")

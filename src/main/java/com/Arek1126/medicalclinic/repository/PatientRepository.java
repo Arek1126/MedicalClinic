@@ -1,5 +1,6 @@
 package com.Arek1126.medicalclinic.repository;
 
+import com.Arek1126.medicalclinic.exception.PatientNotFoundException;
 import com.Arek1126.medicalclinic.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,15 @@ public class PatientRepository {
                     return Optional.of(patient);
                 })
                 .orElseGet(Optional::empty);
+    }
+
+    public boolean changePassword(String email, String newPassword){
+        Optional<Patient> patient = findByEmail(email);
+        if(patient.isPresent()) {
+            patient.get().setPassword(newPassword);
+            return true;
+        }
+        return false;
     }
 
 

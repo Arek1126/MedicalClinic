@@ -2,9 +2,9 @@ package com.Arek1126.medicalclinic.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class PatientAlreadyExists extends MedicalClinicException{
+public class PatientAlreadyExistsException extends MedicalClinicException{
 
-    public PatientAlreadyExists(){
+    public PatientAlreadyExistsException(){
         super("Patient Already Exists", HttpStatus.CONFLICT);
     }
 }

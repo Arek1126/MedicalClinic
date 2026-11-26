@@ -1,6 +1,6 @@
 package com.Arek1126.medicalclinic.service;
 
-import com.Arek1126.medicalclinic.exception.PatientAlreadyExists;
+import com.Arek1126.medicalclinic.exception.PatientAlreadyExistsException;
 import com.Arek1126.medicalclinic.exception.PatientNotFoundException;
 import com.Arek1126.medicalclinic.mapper.PatientMapper;
 import com.Arek1126.medicalclinic.model.Patient;
@@ -27,9 +27,9 @@ public class PatientService {
         return patientMapper.toDTO(patient);
    }
 
-   public PatientDTO addPatient(Patient newPatient){
+   public PatientDTO save(Patient newPatient){
         Patient patient = patientRepository.addPatient(newPatient)
-                .orElseThrow(PatientAlreadyExists::new);
+                .orElseThrow(PatientAlreadyExistsException::new);
         return patientMapper.toDTO(patient);
    }
 
@@ -46,9 +46,9 @@ public class PatientService {
     }
 
     public void changePassword(String email, String newPassword){
-        Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(PatientNotFoundException::new);
-        patient.setPassword(newPassword);
+        if(!patientRepository.changePassword(email, newPassword)) {
+                throw new PatientNotFoundException();
+        }
     }
 
     private PatientDTO mapToDTO(Patient patient){
