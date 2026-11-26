@@ -1,38 +1,57 @@
 package com.Arek1126.medicalclinic.service;
 
+import com.Arek1126.medicalclinic.exception.PatientAlreadyExists;
+import com.Arek1126.medicalclinic.exception.PatientNotFoundException;
+import com.Arek1126.medicalclinic.mapper.PatientMapper;
 import com.Arek1126.medicalclinic.model.Patient;
+import com.Arek1126.medicalclinic.model.PatientDTO;
 import com.Arek1126.medicalclinic.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
 
-
-    public List<Patient> getPatients() {
-        return patientRepository.findAll();
+    public List<PatientDTO> getAll() {
+        return patientMapper.toDTOList(patientRepository.findAll());
     }
 
-   public Optional<Patient> getPatientByEmail(String email){
-        return patientRepository.findPatientByEmail(email);
+   public PatientDTO getByEmail(String email){
+        Patient patient = patientRepository.findByEmail(email)
+                .orElseThrow(PatientNotFoundException::new);
+        return patientMapper.toDTO(patient);
    }
 
-   public boolean addPatient(Patient patient){
-       return patientRepository.addPatient(patient);
-
+   public PatientDTO addPatient(Patient newPatient){
+        Patient patient = patientRepository.addPatient(newPatient)
+                .orElseThrow(PatientAlreadyExists::new);
+        return patientMapper.toDTO(patient);
    }
 
-   public boolean deletePatientByEmail(String email){
-        return patientRepository.deletePatientByEmail(email);
+   public void deleteByEmail(String email){
+        if(!patientRepository.deleteByEmail(email)){
+            throw new PatientNotFoundException();
+        }
    }
 
-    public boolean modifyPatient(String email, Patient patient){
-        return patientRepository.modifyPatient(email, patient);
+    public PatientDTO modifyByEmail(String email, Patient modifiedPatient){
+        Patient patient = patientRepository.modifyByEmail(email, modifiedPatient)
+                .orElseThrow(PatientNotFoundException::new);
+        return patientMapper.toDTO(patient);
+    }
+
+    public void changePassword(String email, String newPassword){
+        Patient patient = patientRepository.findByEmail(email)
+                .orElseThrow(PatientNotFoundException::new);
+        patient.setPassword(newPassword);
+    }
+
+    private PatientDTO mapToDTO(Patient patient){
+        return new PatientDTO(patient.getLastName(), patient.getFirstName(), patient.getEmail());
     }
 }
